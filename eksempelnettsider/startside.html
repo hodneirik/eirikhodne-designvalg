@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #F7F9F8;
+    overflow: hidden;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Landskap: blokk fra høyre ── */
+  @keyframes slideFromRight {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* ── Portrett: blokk fra bunnen ── */
+  @keyframes slideFromBottom {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    z-index: 0;
+  }
+
+  /* Landskap */
+  @media (orientation: landscape) {
+    body::after {
+      top: 0; right: 0;
+      width: 50%; height: 100%;
+      background: #12161C;
+      animation: slideFromRight 2.2s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .ui {
+      position: fixed;
+      top: 50%; left: 0; right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 0 48px;
+      z-index: 1;
+    }
+    .name { align-self: flex-start; }
+  }
+
+  /* Portrett */
+  @media (orientation: portrait) {
+    body::after {
+      bottom: 0; left: 0;
+      width: 100%; height: 50%;
+      background: #12161C;
+      animation: slideFromBottom 2.2s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .ui {
+      position: fixed;
+      top: 48px; left: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      z-index: 1;
+    }
+    .name { align-self: flex-start; }
+  }
+
+  .name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    color: #12161C;
+    margin-bottom: 28px;
+    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+  }
+
+  .btn {
+    display: block;
+    padding: 14px 48px;
+    min-width: 200px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    border: 2.5px solid #12161C;
+    color: #12161C;
+    background-color: #F7F9F8;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .btn:nth-child(2) { animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.4s both; }
+  .btn:nth-child(3) { animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.65s both; }
+  .btn:nth-child(4) { animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.95s both; }
+  .btn:hover {
+    background-color: #12161C;
+    color: #F7F9F8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body        { background: #12161C; }
+    body::after { background: #788CA0; }
+    .name       { color: #F7F9F8; }
+    .btn        { border-color: #F7F9F8; color: #F7F9F8; background-color: #12161C; }
+    .btn:hover  { background-color: #F7F9F8; color: #12161C; }
+  }
+</style>
+</head>
+<body>
+<div class="ui">
+  <p class="name">Eirik<br>Hodne</p>
+  <a href="https://eirikhodne.no/kode-eksempler" class="btn">Kodeeksempler</a>
+  <a href="https://eirikhodne.no/svg" class="btn">Vektorverkstedet</a>
+  <a href="https://eirikhodne.no/undervisning/#alle" class="btn">Undervisningsopplegg</a>
+</div>
+</body>
+</html>
