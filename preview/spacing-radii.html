@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  html,body{margin:0;background:#F7F9F8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#12161C;}
+  .card{padding:28px;}
+  h4{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#6e6e73;margin:0 0 18px;font-weight:700;}
+  .row{display:flex;align-items:center;gap:24px;}
+  .shape{background:#F7F9F8;border:2.5px solid #12161C;}
+  .pill{width:120px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;}
+  .card-r{width:140px;height:84px;border:none;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#6e6e73;}
+  .img-r{width:64px;height:64px;border-radius:12px;background:#e6e6e8;}
+  .lbl{display:block;font-family:"SF Mono","Fira Code",monospace;font-size:10.5px;color:#6e6e73;margin-top:8px;}
+  .col{display:flex;flex-direction:column;align-items:flex-start;}
+</style></head>
+<body><div class="card">
+  <h4>Corner radii</h4>
+  <div class="row">
+    <div class="col"><div class="shape pill">Pill</div><span class="lbl">999px · button/tag</span></div>
+    <div class="col"><div class="card-r">Card</div><span class="lbl">1.25rem · 20px</span></div>
+    <div class="col"><div class="img-r"></div><span class="lbl">0.75rem · image</span></div>
+  </div>
+</div></body></html>

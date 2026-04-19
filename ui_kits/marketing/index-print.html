@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<title>Marketing UI kit — Print · Eirik Hodne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 landscape; margin: 0.5cm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html,body { background: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1d1d1f; }
+
+  .page { width: 100%; min-height: 100vh; break-after: page; page-break-after: always; overflow: hidden; }
+  .page:last-child { break-after: auto; page-break-after: auto; }
+
+  /* ═══ Startside ═══ */
+  .startside { position: relative; width: 100%; height: 100vh; background: #F7F9F8; }
+  .startside__block { position: absolute; top: 0; right: 0; width: 50%; height: 100%; background: #12161C; }
+  .startside__ui { position: absolute; z-index: 1; top: 50%; left: 0; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 0 48px; }
+  .startside__name { font-family: 'DM Sans', sans-serif; font-size: 48px; font-weight: 900; letter-spacing: .04em; line-height: 1.1; color: #12161C; margin-bottom: 28px; }
+  .btn { display: block; padding: 14px 48px; min-width: 200px; text-align: center; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; border-radius: 999px; border: 2.5px solid #12161C; color: #12161C; background: #F7F9F8; }
+
+  /* ═══ Rutenettside ═══ */
+  .rutenett { background: #f5f5f7; min-height: 100vh; padding-bottom: 2rem; }
+  .header { background: #f5f5f7; border-bottom: 1px solid rgba(0,0,0,.08); padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .header__title { font-family: 'DM Sans', sans-serif; font-size: 1.4rem; font-weight: 900; letter-spacing: -.01em; color: #0d0f14; }
+  .header__sub { color: #6e6e73; font-size: .82rem; margin-top: .2rem; }
+  .header__home { display: inline-flex; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #0d0f14; border: 2.5px solid #0d0f14; border-radius: 999px; padding: .5rem 1.2rem; text-decoration: none; }
+  .filter { display: flex; justify-content: center; gap: .75rem; margin: 2rem; flex-wrap: wrap; }
+  .filter__btn { border: 2.5px solid #0d0f14; color: #0d0f14; padding: .5rem 1.4rem; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; background: transparent; }
+  .filter__btn.active { background: #0d0f14; color: #F7F9F8; }
+  .grid-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .tile { background: #F7F9F8; border-radius: 1.25rem; padding: 1.5rem; padding-top: 3rem; box-shadow: 0 2px 12px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04); display: flex; flex-direction: column; text-align: center; position: relative; break-inside: avoid; }
+  .tile__badge { position: absolute; top: 1rem; left: 1rem; padding: .25rem .65rem; border-radius: 999px; font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; background: #0d0f14; color: #F7F9F8; }
+  .tile__fag { position: absolute; top: 1rem; right: 1rem; padding: .25rem .65rem; border-radius: 999px; font-size: .65rem; font-weight: 600; background: rgba(0,0,0,.06); color: #1d1d1f; }
+  .tile__title { font-size: 1.1rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .85rem; }
+  .tile__img { width: 100%; aspect-ratio: 1/1; border-radius: .75rem; margin-bottom: 1rem; background: #e8e8ea; }
+  .tile__text { font-size: .88rem; line-height: 1.55; color: #6e6e73; margin-bottom: 1.25rem; flex-grow: 1; }
+  .tile__btn { align-self: center; padding: .5rem 1.4rem; border-radius: 999px; border: 2.5px solid #0d0f14; background: transparent; color: #0d0f14; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="startside">
+    <div class="startside__block"></div>
+    <div class="startside__ui">
+      <p class="startside__name">Eirik<br>Hodne</p>
+      <a class="btn">Kodeeksempler</a>
+      <a class="btn">Vektorverkstedet</a>
+      <a class="btn">Undervisningsopplegg</a>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="rutenett">
+    <div class="header">
+      <div>
+        <h1 class="header__title">Undervisningsopplegg (under arbeid)</h1>
+        <p class="header__sub">Noen av mine favorittopplegg. Tekstene er basert på KI-intervju med meg. Mer ressurser og bilder kommer etterhvert.</p>
+      </div>
+      <a class="header__home">← eirikhodne.no</a>
+    </div>
+    <div class="filter">
+      <button class="filter__btn active">Fremhevet</button>
+      <button class="filter__btn">Alle</button>
+      <button class="filter__btn">Matematikk</button>
+    </div>
+    <div class="grid-wrap">
+      <div class="grid">
+        <div class="tile"><span class="tile__badge">Fremhevet</span><span class="tile__fag">Matematikk</span><h4 class="tile__title">4 firere</h4><div class="tile__img"></div><p class="tile__text">Elevene bruker nøyaktig fire firere og valgfrie matematiske tegn for å treffe alle tallene fra 0 til 20.</p><button class="tile__btn">Les opplegget</button></div>
+        <div class="tile"><span class="tile__fag">Matematikk</span><h4 class="tile__title">12 konvolutter</h4><div class="tile__img"></div><p class="tile__text">Elevene har 12 konvolutter med pengebeløp fra 1 til 12 kr. Målet er å få mest mulig penger.</p><button class="tile__btn">Les opplegget</button></div>
+        <div class="tile"><span class="tile__fag">Matematikk</span><h4 class="tile__title">Algebra og figurtall</h4><div class="tile__img"></div><p class="tile__text">Elevene ser figur 1, 2 og 3 i en rekke og bruker mønsteret til å beregne store figurnummer.</p><button class="tile__btn">Les opplegget</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.fonts.ready.then(() => setTimeout(() => window.print(), 500));
+</script>
+</body>
+</html>
