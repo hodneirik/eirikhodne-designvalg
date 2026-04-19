@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undervisningsopplegg — Eirik Hodne</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked@18.0.0/lib/marked.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --bg: #f5f5f7;
+      --fg: #1d1d1f;
+      --fg-2: #6e6e73;
+      --card: #F7F9F8;
+      --ink: #0d0f14;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(245,245,247,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-tekst { flex: 1; min-width: 0; }
+
+    .header-hjem {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      border: 2.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    .header-hjem:hover {
+      background: var(--ink);
+      color: #F7F9F8;
+    }
+
+    header h1 {
+      font-family: 'DM Sans', 'Helvetica Neue', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    header p {
+      color: var(--fg-2);
+      font-size: 0.82rem;
+      margin-top: 0.2rem;
+    }
+
+    /* ── FILTER ── */
+
+    .kode-filter {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 2.5rem 2rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .kode-filter button {
+      background: transparent;
+      border: 2.5px solid var(--ink);
+      color: var(--ink);
+      padding: 0.5rem 1.4rem;
+      border-radius: 999px;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    .kode-filter button:hover,
+    .kode-filter button.active {
+      background: var(--ink);
+      color: #F7F9F8;
+    }
+
+    /* ── RUTENETT ── */
+
+    .tile-grid-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      transition: opacity 0.2s ease;
+    }
+
+    .tile-grid.is-transitioning {
+      opacity: 0;
+    }
+
+    .tile {
+      background: var(--card);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      padding-top: 3rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.22s cubic-bezier(0.22,1,0.36,1),
+                  box-shadow 0.22s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .tile:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .tile-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: #F7F9F8;
+    }
+
+    .tile-fag {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(0,0,0,0.06);
+      color: var(--fg);
+    }
+
+    .tile h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.85rem;
+      color: var(--fg);
+    }
+
+    .tile-bilde {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      display: block;
+      background: var(--bg);
+    }
+
+    .tile-bilde-placeholder {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c7c7cc;
+      font-size: 2.5rem;
+    }
+
+    .tile-text {
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--fg-2);
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .tile-knapp {
+      margin-top: auto;
+      align-self: center;
+      padding: 0.5rem 1.4rem;
+      border-radius: 999px;
+      border: 2.5px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    .tile-knapp:hover {
+      background: var(--ink);
+      color: #F7F9F8;
+    }
+
+    /* ── DETALJVISNING ── */
+
+    #rutenett-visning { display: block; }
+    #detalj-visning   { display: none; }
+
+    #detalj-visning-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+    }
+
+    #tilbake-knapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: none;
+      border: 2.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    #tilbake-knapp:hover {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    #innhold {
+      background: var(--card);
+      border-radius: 1.25rem;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+      line-height: 1.7;
+    }
+
+    /* Markdown-stiler */
+    #innhold h1 { font-family: 'DM Sans', 'Helvetica Neue', sans-serif; font-size: 1.7rem; font-weight: 900; margin-bottom: 0.4rem; line-height: 1.15; letter-spacing: -0.02em; color: var(--fg); }
+    #innhold h2 { font-size: 1rem; font-weight: 700; margin: 2rem 0 0.6rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(0,0,0,0.07); letter-spacing: -0.01em; color: var(--fg); }
+    #innhold h3 { font-size: 0.92rem; font-weight: 700; margin: 1.25rem 0 0.4rem; color: var(--fg); }
+    #innhold p  { margin-bottom: 0.9rem; font-size: 0.93rem; color: var(--fg); }
+    #innhold ul, #innhold ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    #innhold li { margin-bottom: 0.3rem; font-size: 0.93rem; color: var(--fg); }
+    #innhold strong { font-weight: 700; }
+    #innhold em { font-style: italic; }
+    #innhold blockquote {
+      border-left: 3px solid rgba(0,0,0,0.12);
+      padding-left: 1rem;
+      color: var(--fg-2);
+      font-style: italic;
+      margin: 1rem 0;
+    }
+    #innhold table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.88rem; }
+    #innhold th { text-align: left; padding: 0.5rem 0.75rem; background: var(--bg); border-bottom: 2px solid rgba(0,0,0,0.08); font-weight: 700; color: var(--fg); }
+    #innhold td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--fg); }
+    #innhold code { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.85em; background: var(--bg); padding: 0.15em 0.4em; border-radius: 5px; color: var(--fg); }
+    #innhold pre { background: var(--bg); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem; overflow-x: auto; }
+    #innhold pre code { background: none; padding: 0; font-size: 0.88rem; }
+    #innhold hr { border: none; border-top: 1px solid rgba(0,0,0,0.07); margin: 1.5rem 0; }
+
+    /* ── DARK MODE ── */
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #12161C;
+        --fg: #f0f0f0;
+        --fg-2: #98989d;
+        --card: #12161C;
+        --ink: #f0f0f0;
+      }
+      header {
+        background: rgba(13,15,20,0.85);
+        border-bottom-color: rgba(255,255,255,0.08);
+      }
+      .tile-fag {
+        background: rgba(255,255,255,0.1);
+      }
+      #innhold h2 { border-bottom-color: rgba(255,255,255,0.08); }
+      #innhold th  { border-bottom-color: rgba(255,255,255,0.1); }
+      #innhold td  { border-bottom-color: rgba(255,255,255,0.05); }
+      #innhold hr  { border-top-color: rgba(255,255,255,0.08); }
+      #innhold blockquote { border-left-color: rgba(255,255,255,0.2); }
+    }
+
+    /* ── HEADER SKJULT I OPPLEGG ── */
+
+    header.skjult { display: none; }
+
+    /* ── BILDEBANNER ── */
+
+    #opplegg-banner {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 1.25rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+
+    /* ── PDF-KNAPP ── */
+
+    #pdf-knapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: none;
+      border: 2.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    #pdf-knapp:hover {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    /* ── PRINT ── */
+
+    @media print {
+      header, #tilbake-knapp, #pdf-knapp, #rutenett-visning { display: none !important; }
+      #detalj-visning { display: block !important; }
+      #detalj-visning-inner { max-width: 100%; padding: 0; margin: 0; }
+      #innhold { box-shadow: none; border-radius: 0; padding: 1rem; }
+      body { background: white; color: black; }
+    }
+
+    /* ── RESPONSIV ── */
+
+    @media (max-width: 600px) {
+      .tile-grid { grid-template-columns: 1fr; }
+      #innhold { padding: 1.5rem; }
+      header { flex-wrap: wrap; }
+      .header-hjem { font-size: 10px; padding: 0.4rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-tekst">
+    <h1>Undervisningsopplegg (under arbeid)</h1>
+    <p>Noen av mine favorittopplegg. Tekstene er basert på KI-intervju med meg. Mer ressurser og bilder kommer etterhvert.</p>
+  </div>
+  <a href="https://eirikhodne.no" class="header-hjem">← eirikhodne.no</a>
+</header>
+
+<!-- RUTENETT -->
+<div id="rutenett-visning">
+  <div id="tag-filter" class="kode-filter"></div>
+  <div class="tile-grid-wrapper">
+    <div id="tile-grid" class="tile-grid"></div>
+  </div>
+</div>
+
+<!-- DETALJ -->
+<div id="detalj-visning">
+  <div id="detalj-visning-inner">
+    <button id="tilbake-knapp">← Tilbake til oversikten</button>
+    <img id="opplegg-banner" alt="">
+    <div id="innhold"></div>
+    <button id="pdf-knapp" onclick="window.print()">↓ Last ned som PDF</button>
+  </div>
+</div>
+
+<script>
+  const rutenettVisning = document.getElementById('rutenett-visning');
+  const detaljVisning   = document.getElementById('detalj-visning');
+  const tileGrid        = document.getElementById('tile-grid');
+  const innhold         = document.getElementById('innhold');
+
+  const header        = document.querySelector('header');
+  const banner        = document.getElementById('opplegg-banner');
+
+  let alleOpplegg = [];
+  let aktivTag    = 'fremhevet';
+
+  // ── Tilbake til oversikt ──────────────────────────────────────────
+  function gaaTilbake() {
+    if (detaljVisning.style.display === 'none') return;
+    detaljVisning.style.display   = 'none';
+    rutenettVisning.style.display = 'block';
+    banner.style.display          = 'none';
+    header.classList.remove('skjult');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Markdown-rydding ──────────────────────────────────────────────
+  function ryddMarkdown(tekst) {
+    // Fjern YAML-frontmatter (robust string-splitting, ikke regex)
+    if (tekst.startsWith('---')) {
+      const slutt = tekst.indexOf('\n---', 3);
+      if (slutt !== -1) tekst = tekst.slice(slutt + 4);
+    }
+    // Fjern seksjoner som ikke hører hjemme på nettsiden
+    tekst = tekst.replace(/^## Eiriks vurdering[\s\S]*?(?=^## )/m, '');
+    tekst = tekst.replace(/^## Forberedelse[\s\S]*?(?=^## )/m, '');
+    tekst = tekst.replace(/^## Vurdering[\s\S]*?(?=^## )/m, '');
+    tekst = tekst.replace(/^## Se også[\s\S]*/m, '');
+    // Gjør om wiki-lenker til ren tekst
+    tekst = tekst.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2');
+    tekst = tekst.replace(/\[\[([^\]]+)\]\]/g, '$1');
+    return tekst;
+  }
+
+  // ── Detaljvisning ─────────────────────────────────────────────────
+  async function visOpplegg(opplegg) {
+    innhold.innerHTML = '<p style="color:#888;padding:2rem 0">Laster…</p>';
+    rutenettVisning.style.display = 'none';
+    detaljVisning.style.display   = 'block';
+    header.classList.add('skjult');
+    if (opplegg.bilde) {
+      banner.src           = opplegg.bilde;
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+    history.pushState({ view: 'opplegg' }, '');
+    window.scrollTo(0, 0);
+    try {
+      const res   = await fetch(opplegg.fil);
+      const tekst = await res.text();
+      innhold.innerHTML = marked.parse(ryddMarkdown(tekst));
+    } catch {
+      innhold.innerHTML = '<p>Kunne ikke laste opplegget.</p>';
+    }
+  }
+
+  document.getElementById('tilbake-knapp').addEventListener('click', () => {
+    history.back();
+  });
+
+  window.addEventListener('popstate', () => {
+    gaaTilbake();
+  });
+
+  // ── Bygg ett kort ─────────────────────────────────────────────────
+  function lagTile(opplegg, indeks) {
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+
+    const erFremhevet = (opplegg.tags || []).includes('fremhevet');
+
+    const badge = erFremhevet
+      ? `<span class="tile-badge">Fremhevet</span>`
+      : '';
+
+    const fagMerke = opplegg.fag
+      ? `<span class="tile-fag">${opplegg.fag}</span>`
+      : '';
+
+    const bildeEl = opplegg.bilde
+      ? `<img class="tile-bilde" src="${opplegg.bilde}" alt="${opplegg.tittel}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+         <div class="tile-bilde-placeholder" style="display:none">📚</div>`
+      : `<div class="tile-bilde-placeholder">📚</div>`;
+
+    const undertekst = opplegg.undertekst || '';
+
+    tile.innerHTML = `
+      ${badge}
+      ${fagMerke}
+      <h4>${opplegg.tittel}</h4>
+      ${bildeEl}
+      <p class="tile-text">${undertekst}</p>
+      <button class="tile-knapp">Les opplegget</button>
+    `;
+
+    // Innanimasjon
+    tile.style.opacity    = '0';
+    tile.style.transform  = 'translateY(12px)';
+    tile.style.transition = `opacity 0.35s ease ${indeks * 40}ms, transform 0.35s ease ${indeks * 40}ms`;
+
+    tile.querySelector('.tile-knapp').addEventListener('click', e => {
+      e.stopPropagation();
+      visOpplegg(opplegg);
+    });
+    tile.addEventListener('click', () => visOpplegg(opplegg));
+
+    return tile;
+  }
+
+  // ── Render grid ───────────────────────────────────────────────────
+  function renderGrid(items) {
+    tileGrid.classList.add('is-transitioning');
+    setTimeout(() => {
+      tileGrid.innerHTML = '';
+      items.forEach((opplegg, i) => {
+        const tile = lagTile(opplegg, i);
+        tileGrid.appendChild(tile);
+        requestAnimationFrame(() => {
+          tile.style.opacity   = '1';
+          tile.style.transform = 'translateY(0)';
+        });
+      });
+      tileGrid.classList.remove('is-transitioning');
+    }, 200);
+  }
+
+  // ── Filter og sortering ───────────────────────────────────────────
+  function sorterOgFilter() {
+    const filtrert = aktivTag === 'alle'
+      ? [...alleOpplegg]
+      : aktivTag === 'fremhevet'
+        ? alleOpplegg.filter(o => (o.tags || []).includes('fremhevet'))
+        : alleOpplegg.filter(o => {
+            const fagTag = (o.fag || '').toLowerCase();
+            return fagTag === aktivTag || (o.tags || []).includes(aktivTag);
+          });
+
+    filtrert.sort((a, b) => {
+      const aF = (a.tags || []).includes('fremhevet');
+      const bF = (b.tags || []).includes('fremhevet');
+      if (aF && !bF) return -1;
+      if (!aF && bF) return  1;
+      return (a.tittel || '').localeCompare(b.tittel || '', 'no');
+    });
+
+    renderGrid(filtrert);
+  }
+
+  // ── Filterknapper ─────────────────────────────────────────────────
+  function byggFilterKnapper(data) {
+    const container  = document.getElementById('tag-filter');
+    const tags       = new Set();
+    const harFremhevet = data.some(o => (o.tags || []).includes('fremhevet'));
+
+    data.forEach(o => {
+      if (o.fag) tags.add(o.fag.toLowerCase());
+      (o.tags || []).filter(t => t !== 'fremhevet').forEach(t => tags.add(t));
+    });
+
+    container.innerHTML = '';
+
+    if (harFremhevet) lagFilterKnapp('fremhevet', 'Fremhevet', true);
+    lagFilterKnapp('alle', 'Alle', false);
+
+    [...tags].sort((a, b) => a.localeCompare(b, 'no')).forEach(tag => {
+      const visning = tag.charAt(0).toUpperCase() + tag.slice(1);
+      lagFilterKnapp(tag, visning, false);
+    });
+  }
+
+  function lagFilterKnapp(tag, visning, aktiv) {
+    const btn = document.createElement('button');
+    btn.textContent = visning;
+    btn.dataset.tag = tag;
+    if (aktiv) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#tag-filter button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      aktivTag = tag;
+      history.replaceState(null, '', '#' + tag);
+      sorterOgFilter();
+    });
+    document.getElementById('tag-filter').appendChild(btn);
+  }
+
+  // ── Last data ─────────────────────────────────────────────────────
+  history.replaceState({ view: 'grid' }, '');
+
+  fetch('inndata.json')
+    .then(r => r.json())
+    .then(data => {
+      alleOpplegg = data;
+      byggFilterKnapper(data);
+
+      const hashTag = window.location.hash.replace('#', '').toLowerCase();
+      if (hashTag) {
+        const gyldigeTags = new Set(['alle', 'fremhevet']);
+        data.forEach(o => {
+          if (o.fag) gyldigeTags.add(o.fag.toLowerCase());
+          (o.tags || []).forEach(t => gyldigeTags.add(t));
+        });
+        if (gyldigeTags.has(hashTag)) {
+          aktivTag = hashTag;
+          document.querySelectorAll('#tag-filter button').forEach(b => {
+            b.classList.toggle('active', b.dataset.tag === hashTag);
+          });
+        }
+      }
+
+      sorterOgFilter();
+    });
+</script>
+
+</body>
+</html>
